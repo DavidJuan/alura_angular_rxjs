@@ -5,6 +5,7 @@ import { MessagesModule } from '../messages/messages.module';
 import { NoDataModule } from '../no-data/no-data.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthorizationModule } from '../authorization/authorization.module';
+import { environment } from '../../environments/environment'
 
 @NgModule({
   imports: [
@@ -23,4 +24,6 @@ import { AuthorizationModule } from '../authorization/authorization.module';
     AuthorizationModule,
   ],
 })
-export class SharedModule {}
+export class SharedModule {
+  api = environment.api;
+}
