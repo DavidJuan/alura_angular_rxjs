@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { map, pluck, tap } from 'rxjs/operators';
@@ -13,14 +13,17 @@ export class AcoesService {
     private sharedModule: SharedModule
   ) {}
 
-  getAcoes() {
-    return this.httpClient.get<AcoesAPI>(`${this.sharedModule.api}/acoes`).pipe(
-      tap((valor) => console.log(valor)),
-      pluck('payload'),
-      map((acoes) =>
-        acoes.sort((acaoA, acaoB) => this.orderByCode(acaoA, acaoB))
-      )
-    );
+  getAcoes(value?: string) {
+    const params = value ? new HttpParams().append('valor', value) : undefined;
+    return this.httpClient
+      .get<AcoesAPI>(`${this.sharedModule.api}/acoes`, { params })
+      .pipe(
+        tap((valor) => console.log(valor)),
+        pluck('payload'),
+        map((acoes) =>
+          acoes.sort((acaoA, acaoB) => this.orderByCode(acaoA, acaoB))
+        )
+      );
   }
 
   private orderByCode(acaoA: Acao, acaoB: Acao) {
