@@ -2,8 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Acoes } from './model/acoes';
 import { AcoesService } from './acoes.service';
-import { switchMap, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { merge } from 'rxjs';
+
+const TEMPO_DE_ESPERA = 300;
 
 @Component({
   selector: 'app-acoes',
@@ -15,7 +23,10 @@ export class AcoesComponent {
   todasAcoes$ = this.acoesService.getAcoes();
 
   acoesFiltradas$ = this.acoesInput.valueChanges.pipe(
+    debounceTime(TEMPO_DE_ESPERA),
     tap(console.log),
+    filter((value) => value.length >= 3 || !value.length),
+    distinctUntilChanged(),
     switchMap((value) => this.acoesService.getAcoes(value)),
     tap(console.log)
   );
